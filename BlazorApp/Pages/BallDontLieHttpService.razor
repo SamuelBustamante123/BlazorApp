@@ -1,6 +1,7 @@
 ﻿@page "/players"
 @using System.Text.Json
-@using System.Text.Json.Serialization
+@using System.Text.Json.Serialization;
+
 @inject IHttpClientFactory ClientFactory
 
 <h1>Players</h1>
@@ -12,20 +13,20 @@
 else
 {
     <ul>--
-        @foreach (var player in players)
-        {
-            <li>@player.first_name</li>
-        }
+            <li>Player : @players.firstName @players.lastName</li>
+            <li>Player height = @players.heightFeet' @players.heightInches''</li>
+            <li>Player weight = @players.weightPounds</li>
+            <li>Player city  = @players.team?.city</li>
     </ul>
 }
 
 @code {
-    private IEnumerable<Players> players = Array.Empty<Players>();
+    private Players players = new Players();
     private bool getPlayerError;
     private bool shouldRender;
 
     protected override bool ShouldRender() => shouldRender;
-
+    
     protected override async Task OnInitializedAsync()
     {
 
@@ -37,32 +38,69 @@ else
         if (response.IsSuccessStatusCode)
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
-            string text = "";
-            using (StreamReader sr = new StreamReader(responseStream))
-            {
-                text = sr.ReadToEnd();
 
-            }
-            Console.WriteLine(text);
-            players = await JsonSerializer.DeserializeAsync<IEnumerable<Players>>(responseStream);
+            players = await JsonSerializer.DeserializeAsync<Players>(responseStream);
         }
         else
         {
             getPlayerError = true;
         }
+        shouldRender = true;
 
     }
+
 
 
     public class Players
     {
+        [JsonPropertyName("id")]
         public int id { get; set; }
 
-        public string? first_name { get; set; }
+        [JsonPropertyName("first_name")]
+        public string? firstName { get; set; }
 
-        public string? last_name { get; set; }
+        [JsonPropertyName("height_feet")]
+        public int? heightFeet { get; set; }
 
+        [JsonPropertyName("height_inches")]
+        public int? heightInches { get; set; }
+
+        [JsonPropertyName("last_name")]
+        public string? lastName { get; set; }
+
+        [JsonPropertyName("position")]
         public string? position { get; set; }
-    }
 
+        [JsonPropertyName("team")] 
+        public Team? team { get; set; }
+
+        [JsonPropertyName("weight_pounds")]
+        public int weightPounds { get; set; }
+
+    }
+    
+    public class Team
+    {
+        [JsonPropertyName("id")]
+        public int id { get; set; }
+
+        [JsonPropertyName("abbreviation")]
+        public string? abbreviation { get; set; }
+        
+        [JsonPropertyName("city")]
+        public string? city { get; set; }
+        
+        [JsonPropertyName("conference")]
+        public string? conference { get; set; }
+
+        [JsonPropertyName("division")]
+        public string? division { get; set; }
+
+        [JsonPropertyName("full_name")]
+        public string? fullName { get; set; }
+        
+        [JsonPropertyName("name")]
+        public string? shortName { get; set; }
+
+    }
 }
