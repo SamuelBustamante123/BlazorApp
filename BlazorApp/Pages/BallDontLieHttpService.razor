@@ -13,15 +13,20 @@
 else
 {
     <ul>--
-            <li>Player : @players.firstName @players.lastName</li>
-            <li>Player height = @players.heightFeet' @players.heightInches''</li>
-            <li>Player weight = @players.weightPounds</li>
-            <li>Player city  = @players.team?.city</li>
+         @foreach (var player in players.dataPlayers)
+        {
+            <li> =================================================================== </li>
+            <li>Player : @player.firstName @player.lastName</li>
+            <li>Player height = @player.heightFeet' @player.heightInches''</li>
+            <li>Player weight = @player.weightPounds</li>
+            <li>Player city  = @player.team?.city</li>
+            <li> =================================================================== </li>
+        }
     </ul>
 }
 
 @code {
-    private Players players = new Players();
+    private Data players = new Data();
     private bool getPlayerError;
     private bool shouldRender;
 
@@ -30,7 +35,7 @@ else
     protected override async Task OnInitializedAsync()
     {
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players/237");
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players");
         var client = ClientFactory.CreateClient();
 
         var response = await client.SendAsync(request);
@@ -39,7 +44,7 @@ else
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
 
-            players = await JsonSerializer.DeserializeAsync<Players>(responseStream);
+            players = await JsonSerializer.DeserializeAsync<Data>(responseStream);
         }
         else
         {
@@ -49,8 +54,34 @@ else
 
     }
 
+    
+    public class Data
+    {
+        [JsonPropertyName("data")]
+        public List<Players>? dataPlayers { get; set; }
+        
+        [JsonPropertyName("meta")]
+        public MetaData? metaData { get; set; }
+    }
+    
+    public class MetaData
+    {
+        [JsonPropertyName("total_pages")]
+        public int totalPages { get; set; }
+        
+        [JsonPropertyName("current_page")]
+        public int currentPage { get; set; }
 
+        [JsonPropertyName("next_page")]
+        public int nextPage { get; set; }
 
+        [JsonPropertyName("per_page")]
+        public int perPage { get; set; }
+        
+        [JsonPropertyName("total_count")]
+        public int totalCount { get; set; }
+    }
+    
     public class Players
     {
         [JsonPropertyName("id")]
@@ -75,7 +106,7 @@ else
         public Team? team { get; set; }
 
         [JsonPropertyName("weight_pounds")]
-        public int weightPounds { get; set; }
+        public int? weightPounds { get; set; }
 
     }
     
