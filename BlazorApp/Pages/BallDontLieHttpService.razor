@@ -1,0 +1,68 @@
+﻿@page "/players"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IHttpClientFactory ClientFactory
+
+<h1>Players</h1>
+
+@if (getPlayerError)
+{
+    <p>Unable to get players</p>
+}
+else
+{
+    <ul>--
+        @foreach (var player in players)
+        {
+            <li>@player.first_name</li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<Players> players = Array.Empty<Players>();
+    private bool getPlayerError;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players/237");
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            string text = "";
+            using (StreamReader sr = new StreamReader(responseStream))
+            {
+                text = sr.ReadToEnd();
+
+            }
+            Console.WriteLine(text);
+            players = await JsonSerializer.DeserializeAsync<IEnumerable<Players>>(responseStream);
+        }
+        else
+        {
+            getPlayerError = true;
+        }
+
+    }
+
+
+    public class Players
+    {
+        public int id { get; set; }
+
+        public string? first_name { get; set; }
+
+        public string? last_name { get; set; }
+
+        public string? position { get; set; }
+    }
+
+}
