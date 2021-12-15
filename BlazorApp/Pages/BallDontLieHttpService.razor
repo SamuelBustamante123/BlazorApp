@@ -35,7 +35,7 @@ else
     protected override async Task OnInitializedAsync()
     {
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players");
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players?per_page=100");
         var client = ClientFactory.CreateClient();
 
         var response = await client.SendAsync(request);
