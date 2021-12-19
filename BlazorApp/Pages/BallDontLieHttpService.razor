@@ -1,6 +1,7 @@
 ﻿@page "/players"
 @using System.Text.Json
-@using System.Text.Json.Serialization
+@using System.Text.Json.Serialization;
+
 @inject IHttpClientFactory ClientFactory
 
 <h1>Players</h1>
@@ -12,24 +13,29 @@
 else
 {
     <ul>--
-        @foreach (var player in players)
+         @foreach (var player in players.dataPlayers)
         {
-            <li>@player.first_name</li>
+            <li> =================================================================== </li>
+            <li>Player : @player.firstName @player.lastName</li>
+            <li>Player height = @player.heightFeet' @player.heightInches''</li>
+            <li>Player weight = @player.weightPounds</li>
+            <li>Player city  = @player.team?.city</li>
+            <li> =================================================================== </li>
         }
     </ul>
 }
 
 @code {
-    private IEnumerable<Players> players = Array.Empty<Players>();
+    private Data players = new Data();
     private bool getPlayerError;
     private bool shouldRender;
 
     protected override bool ShouldRender() => shouldRender;
-
+    
     protected override async Task OnInitializedAsync()
     {
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players/237");
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://www.balldontlie.io/api/v1/players?per_page=100");
         var client = ClientFactory.CreateClient();
 
         var response = await client.SendAsync(request);
@@ -37,32 +43,95 @@ else
         if (response.IsSuccessStatusCode)
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
-            string text = "";
-            using (StreamReader sr = new StreamReader(responseStream))
-            {
-                text = sr.ReadToEnd();
 
-            }
-            Console.WriteLine(text);
-            players = await JsonSerializer.DeserializeAsync<IEnumerable<Players>>(responseStream);
+            players = await JsonSerializer.DeserializeAsync<Data>(responseStream);
         }
         else
         {
             getPlayerError = true;
         }
+        shouldRender = true;
 
     }
 
+    
+    public class Data
+    {
+        [JsonPropertyName("data")]
+        public List<Players>? dataPlayers { get; set; }
+        
+        [JsonPropertyName("meta")]
+        public MetaData? metaData { get; set; }
+    }
+    
+    public class MetaData
+    {
+        [JsonPropertyName("total_pages")]
+        public int totalPages { get; set; }
+        
+        [JsonPropertyName("current_page")]
+        public int currentPage { get; set; }
 
+        [JsonPropertyName("next_page")]
+        public int nextPage { get; set; }
+
+        [JsonPropertyName("per_page")]
+        public int perPage { get; set; }
+        
+        [JsonPropertyName("total_count")]
+        public int totalCount { get; set; }
+    }
+    
     public class Players
     {
+        [JsonPropertyName("id")]
         public int id { get; set; }
 
-        public string? first_name { get; set; }
+        [JsonPropertyName("first_name")]
+        public string? firstName { get; set; }
 
-        public string? last_name { get; set; }
+        [JsonPropertyName("height_feet")]
+        public int? heightFeet { get; set; }
 
+        [JsonPropertyName("height_inches")]
+        public int? heightInches { get; set; }
+
+        [JsonPropertyName("last_name")]
+        public string? lastName { get; set; }
+
+        [JsonPropertyName("position")]
         public string? position { get; set; }
-    }
 
+        [JsonPropertyName("team")] 
+        public Team? team { get; set; }
+
+        [JsonPropertyName("weight_pounds")]
+        public int? weightPounds { get; set; }
+
+    }
+    
+    public class Team
+    {
+        [JsonPropertyName("id")]
+        public int id { get; set; }
+
+        [JsonPropertyName("abbreviation")]
+        public string? abbreviation { get; set; }
+        
+        [JsonPropertyName("city")]
+        public string? city { get; set; }
+        
+        [JsonPropertyName("conference")]
+        public string? conference { get; set; }
+
+        [JsonPropertyName("division")]
+        public string? division { get; set; }
+
+        [JsonPropertyName("full_name")]
+        public string? fullName { get; set; }
+        
+        [JsonPropertyName("name")]
+        public string? shortName { get; set; }
+
+    }
 }
