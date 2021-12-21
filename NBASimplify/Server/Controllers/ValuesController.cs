@@ -18,7 +18,7 @@ namespace BlazorApp1.Server.Controllers
         [HttpGet]
         public async Task<List<PlayerStats>> Get()
         {
-            List<PlayerStats> result = await GetResponse();
+            List<PlayerStats> ?result = await GetResponse();
             return result;
         }
 
@@ -30,7 +30,7 @@ namespace BlazorApp1.Server.Controllers
             var response = await client.SendAsync(request);
             using var responseStream = await response.Content.ReadAsStreamAsync();
 
-            List<PlayerStats> result = await JsonSerializer.DeserializeAsync<List<PlayerStats>>(responseStream);
+            List<PlayerStats> ?result = await JsonSerializer.DeserializeAsync<List<PlayerStats>>(responseStream);
             return result;
         }
     }

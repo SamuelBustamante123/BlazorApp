@@ -45,10 +45,11 @@ else
 }
 
 @code {
-    private List<PlayerStats> players;
+    private List<PlayerStats> ?players;
 
     protected override async Task OnInitializedAsync()
     {
         players = await Http.GetFromJsonAsync<List<PlayerStats>>("Api/Values");
     }
+
 }
