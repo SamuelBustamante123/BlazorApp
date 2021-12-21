@@ -10,18 +10,18 @@ namespace BlazorApp1.Server.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        static string _address = "https://api.sportsdata.io/v3/nba/stats/json/PlayerSeasonStatsByPlayer/2021/20000571";
+        static string _address = "https://api.sportsdata.io/v3/nba/stats/json/PlayerSeasonStats/2021";
         private string key = "b5c072b0c0084b48976bce47e70e9757";
         private string header = "Ocp-Apim-Subscription-Key";
         // GET: api/<ValuesController>
         [HttpGet]
-        public async Task<PlayerStats> Get()
+        public async Task<List<PlayerStats>> Get()
         {
-            PlayerStats result = await GetResponse();
+            List<PlayerStats> result = await GetResponse();
             return result;
         }
 
-        private async Task<PlayerStats> GetResponse()
+        private async Task<List<PlayerStats>> GetResponse()
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, _address);
@@ -29,7 +29,7 @@ namespace BlazorApp1.Server.Controllers
             var response = await client.SendAsync(request);
             using var responseStream = await response.Content.ReadAsStreamAsync();
 
-            PlayerStats result = await JsonSerializer.DeserializeAsync<PlayerStats>(responseStream);
+            List<PlayerStats> result = await JsonSerializer.DeserializeAsync<List<PlayerStats>>(responseStream);
             return result;
         }
     }

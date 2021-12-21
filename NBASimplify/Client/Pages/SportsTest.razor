@@ -2,27 +2,34 @@
 @using BlazorApp1.Shared
 @inject HttpClient Http
 
-@if (player == null)
+@if (players == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <li>Player Name: @player.name</li>
-    <li>Player team: @player.team</li>
-    <li>Player assists: @player.assists</li>
-    <li>Player blockedShots: @player.blockedShots</li>
-    <li>Player games played: @player.gamesPlayed</li>
-    <li>Player assist percentage: @player.assistPercent</li>
-    <li>Player block percent: @player.blocksPercent</li>
-    <li>Player games started: @player.gamesStarted</li>
+    <ul>
+        @foreach (var player in players)
+        {
+            <li>======================================================</li>
+            <li>Player Name: @player.name</li>
+            <li>Player team: @player.team</li>
+            <li>Player assists: @player.assists</li>
+            <li>Player blockedShots: @player.blockedShots</li>
+            <li>Player games played: @player.gamesPlayed</li>
+            <li>Player assist percentage: @player.assistPercent</li>
+            <li>Player block percent: @player.blocksPercent</li>
+            <li>Player games started: @player.gamesStarted</li>
+            <li>======================================================</li>
+        }
+    </ul>
 }
 
 @code {
-    private PlayerStats player;
+    private List<PlayerStats> players;
 
     protected override async Task OnInitializedAsync()
     {
-        player = await Http.GetFromJsonAsync<PlayerStats>("Api/Values");
+        players = await Http.GetFromJsonAsync<List<PlayerStats>>("Api/Values");
     }
 }
