@@ -8,21 +8,40 @@
 }
 else
 {
-    <ul>
-        @foreach (var player in players)
-        {
-            <li>======================================================</li>
-            <li>Player Name: @player.name</li>
-            <li>Player team: @player.team</li>
-            <li>Player assists: @player.assists</li>
-            <li>Player blockedShots: @player.blockedShots</li>
-            <li>Player games played: @player.gamesPlayed</li>
-            <li>Player assist percentage: @player.assistPercent</li>
-            <li>Player block percent: @player.blocksPercent</li>
-            <li>Player games started: @player.gamesStarted</li>
-            <li>======================================================</li>
-        }
-    </ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Team</th>
+                <th>Assists</th>
+                <th>Blocks</th>
+                <th>Steals</th>
+                <th>Turnovers</th>
+                <th>Points</th>
+                <th>Efficiency Rating</th>
+                <th>Fantasy Points</th>
+                <th>Updated </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in players)
+            {
+                <tr>
+                    <td>@player.name</td>
+                    <td>@player.team</td>
+                    <td>@player.assists</td>
+                    <td>@player.blockedShots</td>
+                    <td>@player.steals</td>
+                    <td>@player.turnOvers</td>
+                    <td>@player.points</td>
+                    <td>@player.playerERating</td>
+                    <td>@player.fantasyPoints</td>
+                    <td>@player.updated.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {

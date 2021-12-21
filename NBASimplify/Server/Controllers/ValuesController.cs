@@ -13,6 +13,7 @@ namespace BlazorApp1.Server.Controllers
         static string _address = "https://api.sportsdata.io/v3/nba/stats/json/PlayerSeasonStats/2021";
         private string key = "b5c072b0c0084b48976bce47e70e9757";
         private string header = "Ocp-Apim-Subscription-Key";
+
         // GET: api/<ValuesController>
         [HttpGet]
         public async Task<List<PlayerStats>> Get()
