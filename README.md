@@ -48,9 +48,14 @@ Use full capitalization, denote spaces with '_'
 3. Internal includes (eg; .Shared)
 4. @Inject calls
 
+#### Client-Side Components 
+1. External Includes (eg; Syncfusion.Blazor)
+1. Internal includes (eg; .Shared)
+1. @Inject calls
+
 #### Controllers 
 1. External Includes
-2. Internal Includes 
+1. Internal Includes 
 
 ___
 
