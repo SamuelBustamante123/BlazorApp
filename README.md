@@ -54,4 +54,8 @@ Use full capitalization, denote spaces with '_'
 
 ___
 
+Contributors 
+1. Samuel Bustamante
+2. Quinn DiPaolo 
+
 
