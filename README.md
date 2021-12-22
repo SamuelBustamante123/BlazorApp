@@ -20,6 +20,8 @@ https://visualstudio.microsoft.com/downloads/
 
 We're using NuGet package manager for our packages - should come bundled with solution.
 
+___
+___
 
 # Coding Style Guide
 
