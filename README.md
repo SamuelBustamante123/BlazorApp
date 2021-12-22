@@ -46,6 +46,7 @@ Use full capitalization, denote spaces with '_'
 1. Page definition at the top
 2. External Includes (eg; Syncfusion.Blazor)
 3. Internal includes (eg; .Shared)
+4. @Inject calls
 
 ### Controllers 
 1. External Includes
