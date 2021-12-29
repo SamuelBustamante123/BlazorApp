@@ -61,6 +61,4 @@ ___
 
 Contributors 
 1. Samuel Bustamante
-2. Quinn DiPaolo 
-
 
