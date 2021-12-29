@@ -23,6 +23,7 @@ namespace BlazorApp1.Server.Controllers
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, SportsDataIoGlobals.Address);
             request.Headers.Add(SportsDataIoGlobals.Header, SportsDataIoGlobals.Key);
+
             var response = await client.SendAsync(request);
             using var responseStream = await response.Content.ReadAsStreamAsync();
 
