@@ -1,6 +1,19 @@
 ﻿@page "/sportsTest"
+
 @using BlazorApp1.Shared
 @inject HttpClient Http
+
+
+<style>
+    .sort-th {
+        cursor: pointer;
+    }
+
+    .fa {
+        float: right;
+    }
+</style>
+
 
 @if (players == null)
 {
@@ -11,13 +24,16 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Name </th>
                 <th>Team</th>
                 <th>Assists</th>
                 <th>Blocks</th>
                 <th>Steals</th>
                 <th>Turnovers</th>
-                <th>Points</th>
+                <th class="sort-th" @onclick="@(() => SortTable("Points"))">
+                    Points
+                    <span class="fa @(SetSortIcon("Points"))"></span>
+                </th>
                 <th>Efficiency Rating</th>
                 <th>Fantasy Points</th>
                 <th>Updated </th>
@@ -45,11 +61,41 @@ else
 }
 
 @code {
-    private List<PlayerStats> ?players;
+    private List<PlayerStats>? players;
+    private bool isSortedAscending = false;
 
     protected override async Task OnInitializedAsync()
     {
         players = await Http.GetFromJsonAsync<List<PlayerStats>>("Api/Values");
+    }
+
+    private void SortTable(string columnName)
+    {
+        if (columnName == "Points")
+        {
+            if (isSortedAscending)
+            {
+                players = players.OrderByDescending(x => x.GetType().GetProperty("points").GetValue(x, null)).ToList();
+            }
+            else
+            {
+                players = players.OrderBy(x => x.GetType().GetProperty("points").GetValue(x, null)).ToList();
+            }
+
+            isSortedAscending = !isSortedAscending;
+        }
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
     }
 
 }
